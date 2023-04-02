@@ -50,8 +50,7 @@ for(i in 1:nrow(PAmut)){ cat(i,"(",date(),")",round(i/nrow(PAmut),4)*100,"%\r")
 ## mutate sample sequence
 			for(i0 in 1:nrow(refM)){
 				k1 = as.numeric(strsplit(refM$NT_POS[i0],"/")[[1]]) # mut seq
-				if(k1[2]==(sT0[3]+sT0[1]-1)){k2 = sT0[2]-sT0[1]+k1[1]}else
-				if(k1[2]==(sT0[3]+sT0[2]-1)){k2 = k1[1]}else{k2=-9}
+				if(k1[2]==(sT0[3]+sT0[1]-1)){k2 = sT0[2]-sT0[1]+k1[1]}else{k2 = k1[1]}
 				sAm[as.numeric(k2)] = nFlip(refM$ALT[i0],refM$STRAND[i0])}
 ## standardize sequences for dN/dS
 			sAm = sAm[sT0[2]:(sT0[3]+sT0[2]-1)]
