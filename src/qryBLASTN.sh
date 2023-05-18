@@ -11,7 +11,7 @@
 # [blast exec] https://www.ncbi.nlm.nih.gov/books/NBK52640/
 # [blast manual] https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html
 # [blast db] https://ftp.ncbi.nlm.nih.gov/blast/db/
-# [blastdb doc] https://ftp.ncbi.nlm.nih.gov/blast/documents/blastdb.html
+# [blastdb build] https://ftp.ncbi.nlm.nih.gov/blast/documents/blastdb.html
 
 ##### env #####
 i0="../raw/p_paGenes"

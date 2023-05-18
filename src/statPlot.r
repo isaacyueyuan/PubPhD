@@ -11,7 +11,7 @@
 options(warn=2);source("src.r")
 load(paste0(ptOT,"SNP_dNdS.rda"))
 #PAmut = read.csv(paste0(ptOT,"geneDNDS.csv"), header=T) # [visually identical]
-cOl = c("#00000000","#00000033","#000000bb","#000000ff")
+cOl = c("#00000000","#00000033","#00000055","#000000ff")
 
 ##### Analysis data extraction #####
 a0 = PAmut[is.finite(PAmut$dNdS),]
@@ -22,24 +22,48 @@ a3 = list(density(a1[[1]]),density(a1[[2]]))
 ##### Median difference test #####
 sT = wilcox.test(a1[[1]],a1[[2]])
 
+##### violin plot #####
+a4 = c(a3[[1]]$y,-a3[[2]]$y); a5 = round(seq(min(a4),max(a4), by=.5),1)
+tiff(paste0(ptOT,"ASMvsLB.tif"), width=700,height=700, compression="lzw")
+par(mar=c(4,3.7,.5,.5)+.1, xpd=F, cex=2)
+
+plot(a4,c(a3[[1]]$x,a3[[2]]$x), col=cOl[1], ylab="log10( dN/dS )", xlab="Density of log10( dN/dS )", xaxt="n")
+axis(1, at=a5, labels=abs(a5))
+abline(v=0,h=0, lty=4)
+text(rep(c(.75,-.75),2), c(rep(.25,2),rep(-1.5,2)), c("ASMA","LBA",paste0("Median = ",round(c(a2[[1]][which(names(a2[[1]])=="Median")],a2[[2]][which(names(a2[[2]])=="Median")]),2))))
+
+## ASMA
+lines(a3[[1]]$y, a3[[1]]$x, col=cOl[3], lwd=3)
+segments(x0=0, x1=max(a4), y0=a2[[1]][which(names(a2[[1]])=="Median")])
+
+## LBA
+lines(-a3[[2]]$y, a3[[2]]$x, col=cOl[2], lwd=3)
+segments(x0=0, x1=min(a4), y0=a2[[2]][which(names(a2[[2]])=="Median")])
+
+## stats
+#segments(x=-.75,y=-1.75,x1=.75,y1=-1.75)
+text(-.75,-2,labels=paste0("Wilcox\nW = ",sT$statistic,", p ",ifelse(sT$p.value<.001,"<< 0.01",paste0(" = ",signif(sT$p.value,2)))))
+
+invisible(dev.off())
+
 ##### Plot #####
-ySt = max(log10(PAmut$dNdS[which(is.finite(PAmut$dNdS))]))*.7 # stat result
-tiff(paste0(ptOT,"ASMvsLB.tif"), width=700,height=1400, compression="lzw")
-par(mar=c(4,3.7,.5,.5)+.1, mfrow=c(2,1), xpd=F, cex=3)
-plot(as.factor(paste0(a0$Medium[which(is.finite(a0$dNdS) & a0$dNdS!=0)],"A")),log10(a0$dNdS[which(is.finite(a0$dNdS) & a0$dNdS!=0)]), pch=3, xlab="Medium", ylab="log10( dN/dS )", col=cOl[1], cex=.8)
+#ySt = max(log10(PAmut$dNdS[which(is.finite(PAmut$dNdS))]))*.7 # stat result
+#tiff(paste0(ptOT,"ASMvsLB.tif"), width=700,height=1400, compression="lzw")
+#par(mar=c(4,3.7,.5,.5)+.1, mfrow=c(2,1), xpd=F, cex=3)
+#plot(as.factor(paste0(a0$Medium[which(is.finite(a0$dNdS) & a0$dNdS!=0)],"A")),log10(a0$dNdS[which(is.finite(a0$dNdS) & a0$dNdS!=0)]), pch=3, xlab="Medium", ylab="log10( dN/dS )", col=cOl[1], cex=.8)
 #text(c(.7,2.3), c(a2[[1]][which(names(a2[[1]])=="Mean")],a2[[2]][which(names(a2[[2]])=="Mean")]), labels=paste0("Mean = ",round(c(a2[[1]][which(names(a2[[1]])=="Mean")],a2[[2]][which(names(a2[[2]])=="Mean")]),2)), cex=.63, srt=0)
-text(c(.8,2.2), c(a2[[1]][which(names(a2[[1]])=="Median")],a2[[2]][which(names(a2[[2]])=="Median")])*.8, labels=paste0("Median = ",round(c(a2[[1]][which(names(a2[[1]])=="Median")],a2[[2]][which(names(a2[[2]])=="Median")]),2)), cex=.63, srt=0)
+#text(c(.8,2.2), c(a2[[1]][which(names(a2[[1]])=="Median")],a2[[2]][which(names(a2[[2]])=="Median")])*.8, labels=paste0("Median = ",round(c(a2[[1]][which(names(a2[[1]])=="Median")],a2[[2]][which(names(a2[[2]])=="Median")]),2)), cex=.63, srt=0)
 #text(rep(c(.7,2.3), each=length(a2[[1]])), c(a2[[1]],a2[[2]]), labels=paste(c(names(a2[[1]]),names(a2[[2]])),round(c(a2[[1]],a2[[2]]),2), sep="="), cex=.3, srt=45)
 #segments(x=1,y=a2[[1]][which(names(a2[[1]])=="Mean")], x1=2,y1=a2[[2]][which(names(a2[[1]])=="Mean")], lwd=3)
 #segments(x=1,y=a2[[1]][which(names(a2[[1]])=="Median")], x1=2,y1=a2[[2]][which(names(a2[[1]])=="Median")], lwd=3)
-segments(x=1,y=ySt,x1=2,y1=ySt);text(1.5,ySt/7*9,labels=paste0("Wilcox\nW = ",sT$statistic,", p = ",round(sT$p.value,4)), cex=.55)
+#segments(x=1,y=ySt,x1=2,y1=ySt);text(1.5,ySt/7*9,labels=paste0("Wilcox\nW = ",sT$statistic,", p = ",round(sT$p.value,4)), cex=.55)
 
 # https://stackoverflow.com/questions/38309547/r-density-plot-with-colors-by-group
-plot(a3[[2]], col=cOl[2], xlab="log10( dN/dS )", main="", lwd=3)
-lines(a3[[1]], col=cOl[3], lty=2, lwd=3)
-legend("topleft", legend=c("ASMA","LBA"), lty=c(2,1), lwd=3, col=cOl[c(3,2)], bty="n")
-abline(v=0, lwd=2)
-invisible(dev.off())
+#plot(a3[[2]], col=cOl[2], xlab="log10( dN/dS )", main="", lwd=3)
+#lines(a3[[1]], col=cOl[3], lty=2, lwd=3)
+#legend("topleft", legend=c("ASMA","LBA"), lty=c(2,1), lwd=3, col=cOl[c(3,2)], bty="n")
+#abline(v=0, lwd=2)
+#invisible(dev.off())
 
 ##### Get density peaks & troughs #####
 z = c(-.05,1.5,"#33ff00aa","#0033ff77")

@@ -53,6 +53,7 @@ for(i in 1:nrow(PAmut)){ cat(i,"(",date(),")",round(i/nrow(PAmut),4)*100,"%\r")
 				if(k1[2]==(sT0[3]+sT0[1]-1)){k2 = sT0[2]-sT0[1]+k1[1]}else{k2 = k1[1]}
 				sAm[as.numeric(k2)] = nFlip(refM$ALT[i0],refM$STRAND[i0])}
 ## standardize sequences for dN/dS
+			if(sT0[2]%%3==2){sT0 = sT0 + c(2,2,-2)}else if(sT0[2]%%3==0){sT0 = sT0 + c(1,1,-1)} # fix ORF position
 			sAm = sAm[sT0[2]:(sT0[3]+sT0[2]-1)]
 			refG = refG[sT0[1]:(sT0[3]+sT0[1]-1)]
 			bIn = dNdS.rt(paste0(refG, collapse=""), paste0(sAm, collapse=""))

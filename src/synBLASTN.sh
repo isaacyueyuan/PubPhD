@@ -33,13 +33,15 @@ while read -r i;do
 		if [[ `grep -e "Gaps = 0/" tmp.txt | wc -l` -gt 0 ]];then
 			i3=`grep -e "[[]locus_tag=" tmp.txt | sed -e "s/locus_tag=/@/" | sed -e "s/[]] [[]pro/@/" | cut -f 2 -d "@"`
 			i4=`grep -e "Sbjct" tmp.txt | head -n 1 | sed -e "s/\t/ /g" | sed -e "s/  / /g" | cut -f 2 -d " "`
+			i5=`grep -e "Query" tmp.txt | head -n 1 | sed -e "s/\t/ /g" | sed -e "s/  / /g" | cut -f 2 -d " "`
+			i6=`grep -e "Gaps = 0/" tmp.txt | cut -f 2 -d "/" | cut -f 1 -d " "`
 		else
-			i3="";i4=""
+			i3="";i4="";i5="";i6=""
 		fi
 	else
-		i3="";i4=""
+		i3="";i4="";i5="";i6=""
 	fi
-	echo -e "${i2},${i3},${i4}" >> ${i1}/../resBLASTN.csv
+	echo -e "${i2},${i3},${i4},${i5},${i6}" >> ${i1}/../resBLASTN.csv
 done < lSt.txt
 rm lSt.txt; rm tmp.txt
 printf "\nDone\n"
